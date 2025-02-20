@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
-import { GameBoardComponent } from '../game-board/game-board.component';
 import socket from '../../socket-client';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
-  imports: [GameBoardComponent],
+  imports: [FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
+  playerId: string = '';
   constructor() {
     socket.connect();
   }
