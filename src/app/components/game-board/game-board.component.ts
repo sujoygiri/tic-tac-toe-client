@@ -12,6 +12,11 @@ import socket from '../../socket-client';
 export class GameBoardComponent implements OnInit {
   gameBoard: (string | null)[][] = [];
   userInput: string = '';
+  isTopSlashVisible: boolean = false;
+  isMiddleSlashVisible: boolean = false;
+  isBottomSlashVisible: boolean = false;
+  isFrontSlashVisible: boolean = false;
+  isBackSlashVisible: boolean = false;
   constructor() {}
 
   ngOnInit(): void {

@@ -35,7 +35,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'text',
           id: 'name',
-          icon: '',
+          icon: 'person-circle',
           formControlName: 'name',
         },
       },
@@ -44,7 +44,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'email',
           id: 'email',
-          icon: '',
+          icon: 'envelope-at-fill',
           formControlName: 'email',
         },
       },
@@ -53,7 +53,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'password',
           id: 'password',
-          icon: '',
+          icon: 'key-fill',
           formControlName: 'password',
         },
       },
@@ -62,7 +62,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'password',
           id: 'password',
-          icon: '',
+          icon: 'key-fill',
           formControlName: 'confirm_password',
         },
       },
@@ -73,7 +73,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'email',
           id: 'email',
-          icon: '',
+          icon: 'envelope-at-fill',
           formControlName: 'email',
         },
       },
@@ -82,7 +82,7 @@ export class AuthComponent implements OnInit {
         input: {
           type: 'password',
           id: 'password',
-          icon: '',
+          icon: 'key-fill',
           formControlName: 'password',
         },
       },
@@ -93,7 +93,7 @@ export class AuthComponent implements OnInit {
   showOrHideAuthForm: boolean = false;
   signupForm!: FormGroup;
   signinForm!: FormGroup;
-
+  currentFormGroup!: FormGroup;
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
@@ -111,6 +111,9 @@ export class AuthComponent implements OnInit {
   showAuthForm(type: string) {
     this.currentAuthFormType = type;
     this.currentAuthForm = this.authForm[type];
+    this.currentFormGroup =
+      type === 'signup' ? this.signupForm : this.signinForm;
     this.showOrHideAuthForm = true;
   }
+  handelAuth() {}
 }
