@@ -1,26 +1,14 @@
-<div class="w-svw h-svh flex flex-col items-center">
+<div class="w-svw h-svh flex flex-col items-center justify-center">
     <div class="px-4">
-        <div class="flex justify-between mt-8 mb-16 px-3">
-            <div class="flex flex-col gap-4 items-center justify-center">
-                <div
-                    class="w-20 h-20 flex items-center justify-center rounded-full border-blue-600 shadow-lg shadow-blue-500">
-                    <i class="bi bi-person-fill text-white text-4xl"></i>
-                </div>
-                <div class="flex items-center justify-center">
-                    <p class="text-white text-md font-bold">You</p>
-                </div>
-            </div>
-            <div class="flex flex-col gap-4 items-center justify-center">
-                <div
-                    class="w-20 h-20 flex items-center justify-center rounded-full border-blue-600 shadow-lg shadow-blue-500">
-                    <i class="bi bi-person-fill text-white text-4xl"></i>
-                </div>
-                <div class="flex items-center justify-center">
-                    <p class="text-white text-md font-bold">Opponent</p>
-                </div>
-            </div>
-        </div>
         <div class="relative">
+            <div class="flex w-full justify-start items-center">
+                <div class="absolute h-2 bg-cyan-700 rotate-45 rounded-lg" *ngIf="isFrontSlashVisible"
+                    [@increaseWidthFull]="isFrontSlashVisible"></div>
+            </div>
+            <div class="flex w-full justify-end items-center">
+                <div class="absolute h-2 bg-cyan-700 -rotate-45 rounded-lg" *ngIf="isBackSlashVisible"
+                    [@increaseWidthFull]="isBackSlashVisible"></div>
+            </div>
             @for (row of gameBoard; track $index; let rowIndex = $index ) {
             <div class="flex">
                 @for (cell of row; track $index; let cellIndex = $index) {
@@ -35,16 +23,31 @@
                 }
             </div>
             }
-            <div class="flex w-full justify-center">
-                <div class="absolute top-[3rem] sm:top-[4rem] h-2 w-[80%] bg-cyan-700 rounded-lg"
-                    *ngIf="isTopSlashVisible"></div>
-                <div class="absolute top-1/2 h-2 w-[80%] bg-cyan-700 rounded-lg" *ngIf="isMiddleSlashVisible"></div>
-                <div class="absolute bottom-[3rem] sm:bottom-[4rem] h-2 w-[80%] bg-cyan-700 rounded-lg"
-                    *ngIf="isBottomSlashVisible">
+            <div class="flex w-full justify-center items-center">
+                <div class="absolute flex top-[3rem] sm:top-[4rem] h-2 bg-cyan-700 rounded-lg" *ngIf="isTopSlashVisible"
+                    [@increaseWidth]="isTopSlashVisible"></div>
+                <div class="absolute top-1/2 h-2 bg-cyan-700 rounded-lg" *ngIf="isMiddleSlashVisible"
+                    [@increaseWidth]="isMiddleSlashVisible"></div>
+                <div class="absolute bottom-[3rem] sm:bottom-[4rem] h-2 bg-cyan-700 rounded-lg"
+                    *ngIf="isBottomSlashVisible" [@increaseWidth]="isBottomSlashVisible">
                 </div>
             </div>
-            <div class="absolute top-1/2 h-2 w-full bg-cyan-700 rotate-45 rounded-lg" *ngIf="isFrontSlashVisible"></div>
-            <div class="absolute top-1/2 h-2 w-full bg-cyan-700 -rotate-45 rounded-lg" *ngIf="isBackSlashVisible"></div>
+        </div>
+    </div>
+    <div class="w-full fixed top-0 flex justify-between mt-2 px-3">
+        <div class="flex flex-col gap-4 items-center justify-center ps-4">
+            <div
+                class="w-14 h-14 flex items-center justify-center rounded-full border-blue-600 shadow-lg shadow-blue-500">
+                <i class="bi bi-person-fill text-white text-3xl" (click)="sendMessage()"></i>
+            </div>
+            <p class="text-white text-sm font-semibold">Youeuuefenfsnc</p>
+        </div>
+        <div class="flex flex-col gap-4 items-center justify-center pe-4">
+            <div
+                class="w-14 h-14 flex items-center justify-center rounded-full border-blue-600 shadow-lg shadow-blue-500">
+                <i class="bi bi-person-fill text-white text-3xl"></i>
+            </div>
+            <p class="text-white text-sm font-semibold">Opponentsjnjsnc</p>
         </div>
     </div>
 </div>
