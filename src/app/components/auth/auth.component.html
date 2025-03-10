@@ -1,5 +1,5 @@
 <div class="w-svw h-svh flex items-center justify-center bg-[url('assets/images/background.jpg')] bg-center bg-repeat">
-    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2">
+    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2" *ngIf="!showOrHideAuthForm">
         <div class="flex flex-col justify-center items-center gap-5 p-5">
             <div class="w-full flex justify-center">
                 <button
@@ -21,9 +21,10 @@
         </div>
     </div>
 </div>
-<div class="fixed top-0 left-0 w-svw h-svh bg-slate-800" *ngIf="showOrHideAuthForm">
+<div class="fixed top-0 left-0 w-svw h-svh" *ngIf="showOrHideAuthForm">
     <div class="w-full flex items-center justify-center">
-        <div class="relative p-10 bg-white rounded-2xl mt-8 mx-2 w-full md:w-60 lg:w-80 xl:w-96 ">
+        <div
+            class="relative p-10 bg-white rounded-2xl mt-8 mx-5 sm:mx-2 w-full sm:w-90 xl:w-96 shadow-2xl shadow-slate-400">
             <form action="" [formGroup]="currentFormGroup" (ngSubmit)="handelAuth()">
                 <div class="flex flex-col gap-3">
                     <div *ngFor="let element of currentAuthForm" class="flex flex-col gap-1">
@@ -34,11 +35,28 @@
                             </div>
                             <input [type]="element.input.type" [id]="element.input.id"
                                 formControlName="{{element.input.formControlName}}"
-                                [className]="'w-full ps-10 p-2.5 outline-0 border-2 rounded-lg shadow-xl shadow-gray-400 focus:border-blue-500 focus:shadow-blue-400'">
+                                [className]="'w-full ps-10 p-2.5 outline-0 border-2 rounded-lg shadow-lg shadow-gray-400 focus:border-blue-500 focus:shadow-blue-400'">
+                            <div class="absolute inset-y-0 end-0 flex items-center pe-2 cursor-pointer"
+                                *ngIf="element.input.id === 'password' || element.input.id === 'confirm-password'"
+                                (click)="showOrHidePassword(element)">
+                                <i [className]="'text-xl bi bi-'+showOrHidePasswordIcon"></i>
+                            </div>
                         </div>
                         <div
                             *ngIf="currentFormGroup.controls[element.input.formControlName].dirty && currentFormGroup.controls[element.input.formControlName].touched">
-                            <span>Filed change</span>
+                            <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('required')"
+                                class="text-rose-600 font-semibold text-xs">{{element.label}}
+                                is required.</span>
+                            <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('minlength')"
+                                class="text-rose-600 font-semibold text-xs">{{element.label}}
+                                can't be less than 3 character.</span>
+                            <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('email')"
+                                class="text-rose-600 font-semibold text-xs">{{element.label}}
+                                is invalid.</span>
+                            <span
+                                *ngIf="currentAuthFormType === 'signup' && !currentFormGroup.controls['confirm_password'].getError('required') && element.input.formControlName === 'confirm_password' && currentFormGroup.errors?.['passwordMismatch']"
+                                class="text-rose-600 font-semibold text-xs">Password
+                                did not match.</span>
                         </div>
                     </div>
                     <div class="mt-4">
