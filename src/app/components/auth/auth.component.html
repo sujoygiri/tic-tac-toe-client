@@ -28,40 +28,47 @@
             <form action="" [formGroup]="currentFormGroup" (ngSubmit)="handelAuth()">
                 <div class="flex flex-col gap-3">
                     <div *ngFor="let element of currentAuthForm" class="flex flex-col gap-1">
-                        <label class="font-semibold" [for]="element.input.id">{{element.label}}</label>
+                        <label class="font-semibold text-sm" [for]="element.input.id">{{element.label}}</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 start-0 flex items-center ps-3.5">
                                 <i [className]="'text-xl bi bi-'+element.input.icon"></i>
                             </div>
                             <input [type]="element.input.type" [id]="element.input.id"
                                 formControlName="{{element.input.formControlName}}"
-                                [className]="'w-full ps-10 p-2.5 outline-0 border-2 rounded-lg shadow-lg shadow-gray-400 focus:border-blue-500 focus:shadow-blue-400'">
+                                [className]="'w-full ps-10 p-2.5 outline-0 border-2 rounded-lg shadow-lg shadow-gray-400'"
+                                [ngClass]="{'border-emerald-500 shadow-green-100':!currentFormGroup.controls[element.input.formControlName].invalid,'border-rose-500 shadow-rose-200':(currentFormGroup.controls[element.input.formControlName].invalid && currentFormGroup.controls[element.input.formControlName].dirty)}">
                             <div class="absolute inset-y-0 end-0 flex items-center pe-2 cursor-pointer"
-                                *ngIf="element.input.id === 'password' || element.input.id === 'confirm-password'"
-                                (click)="showOrHidePassword(element)">
-                                <i [className]="'text-xl bi bi-'+showOrHidePasswordIcon"></i>
+                                *ngIf="element.input.id === 'password'" (click)="showOrHidePassword(element)">
+                                <i [className]="'text-xl bi bi-'+element.input.additionalIcon"></i>
                             </div>
                         </div>
                         <div
-                            *ngIf="currentFormGroup.controls[element.input.formControlName].dirty && currentFormGroup.controls[element.input.formControlName].touched">
+                            *ngIf="currentFormGroup.controls[element.input.formControlName].dirty && currentFormGroup.controls[element.input.formControlName].errors">
                             <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('required')"
                                 class="text-rose-600 font-semibold text-xs">{{element.label}}
                                 is required.</span>
                             <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('minlength')"
                                 class="text-rose-600 font-semibold text-xs">{{element.label}}
-                                can't be less than 3 character.</span>
+                                can't be less than
+                                {{currentFormGroup.controls[element.input.formControlName].errors?.['minlength']['requiredLength']}}
+                                character.</span>
                             <span *ngIf="currentFormGroup.controls[element.input.formControlName].getError('email')"
                                 class="text-rose-600 font-semibold text-xs">{{element.label}}
                                 is invalid.</span>
                             <span
-                                *ngIf="currentAuthFormType === 'signup' && !currentFormGroup.controls['confirm_password'].getError('required') && element.input.formControlName === 'confirm_password' && currentFormGroup.errors?.['passwordMismatch']"
-                                class="text-rose-600 font-semibold text-xs">Password
-                                did not match.</span>
+                                *ngIf="!currentFormGroup.controls[element.input.formControlName].getError('minlength') && currentFormGroup.controls[element.input.formControlName].getError('pattern')"
+                                class="text-rose-600 font-semibold text-xs">Password must contain at least 1 Uppercase
+                                letter, 1 Lower case letter, 1 Number, 1 Special character</span>
+                            <!-- <span
+                                *ngIf="currentFormGroup.controls?.[element.input.formControlName]?.errors?.['passwordMismatch']"
+                                class="text-rose-600 font-semibold text-xs">Password and Confirm Password must be
+                                same</span> -->
                         </div>
                     </div>
                     <div class="mt-4">
                         <button type="submit"
-                            class="w-full px-5 py-2 text-white font-bold bg-blue-600 hover:bg-blue-700 cursor-pointer rounded-lg shadow-2xl shadow-blue-500">Submit</button>
+                            class="w-full px-5 py-2 text-white font-bold bg-blue-600 hover:bg-blue-700 cursor-pointer rounded-lg shadow-2xl shadow-blue-500 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                            [disabled]="currentFormGroup.invalid && currentAuthFormType !== 'signin'">Submit</button>
                     </div>
                 </div>
             </form>

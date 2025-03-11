@@ -4,7 +4,6 @@ import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 
@@ -18,6 +17,7 @@ interface FromStructure {
     id: string;
     icon: string;
     formControlName: string;
+    additionalIcon?: string;
   };
 }
 
@@ -59,17 +59,19 @@ export class AuthComponent implements OnInit {
           id: 'password',
           icon: 'key-fill',
           formControlName: 'password',
+          additionalIcon: 'eye-slash-fill',
         },
       },
-      {
-        label: 'Confirm Password',
-        input: {
-          type: 'password',
-          id: 'confirm-password',
-          icon: 'key-fill',
-          formControlName: 'confirm_password',
-        },
-      },
+      // {
+      //   label: 'Confirm Password',
+      //   input: {
+      //     type: 'password',
+      //     id: 'confirm-password',
+      //     icon: 'key-fill',
+      //     formControlName: 'confirm_password',
+      //     additionalIcon: 'eye-slash-fill',
+      //   },
+      // },
     ],
     signin: [
       {
@@ -88,6 +90,7 @@ export class AuthComponent implements OnInit {
           id: 'password',
           icon: 'key-fill',
           formControlName: 'password',
+          additionalIcon: 'eye-slash-fill',
         },
       },
     ],
@@ -99,7 +102,6 @@ export class AuthComponent implements OnInit {
   signinForm!: FormGroup;
   currentFormGroup!: FormGroup;
   currentFocusedFormControl: string = '';
-  showOrHidePasswordIcon: string = 'eye-slash-fill';
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService
@@ -110,29 +112,54 @@ export class AuthComponent implements OnInit {
       {
         name: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required]],
-        confirm_password: ['', [Validators.required]],
-      },
-      { validators: this.checkPasswordMatch }
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.pattern(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/
+            ),
+          ],
+        ],
+        // confirm_password: ['', [Validators.required]],
+      }
+      // { updateOn: 'submit' }
     );
-    this.signinForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
-    });
+    this.signinForm = this.formBuilder.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required]],
+      },
+      { updateOn: 'submit' }
+    );
+    // this.signupForm
+    //   .get('password')
+    //   ?.addValidators(
+    //     this.checkPasswordMatch(this.signupForm.get('confirm_password')!)
+    //   );
+    // this.signupForm
+    //   .get('confirm_password')
+    //   ?.addValidators(
+    //     this.checkPasswordMatch(this.signupForm.get('password')!)
+    //   );
+    // this.signupForm.get('password')?.updateValueAndValidity();
+    // this.signupForm.get('confirm_password')?.updateValueAndValidity();
   }
 
-  checkPasswordMatch(formGroup: FormGroup): ValidationErrors | null {
-    const passwordFormControl = formGroup.get('password');
-    const confirmPasswordFormControl = formGroup.get('confirm_password');
-    if (!passwordFormControl || !confirmPasswordFormControl) return null;
-    const password = passwordFormControl.value;
-    const confirmPassword = confirmPasswordFormControl.value;
-    if (password === confirmPassword) {
-      return null;
-    } else {
-      return { passwordMismatch: true };
-    }
-  }
+  // checkPasswordMatch(passwordControl: AbstractControl): ValidatorFn {
+  //   return (
+  //     confirmPasswordControl: AbstractControl
+  //   ): ValidationErrors | null => {
+  //     if (!passwordControl || !confirmPasswordControl) return null;
+  //     const password = passwordControl.value;
+  //     const confirmPassword = confirmPasswordControl.value;
+  //     if (!password || !confirmPassword) {
+  //       return null;
+  //     }
+  //     return password === confirmPassword ? null : { passwordMismatch: true };
+  //   };
+  // }
 
   showAuthForm(type: string) {
     this.currentAuthFormType = type;
@@ -146,22 +173,7 @@ export class AuthComponent implements OnInit {
     switch (this.currentAuthFormType) {
       case 'signup': {
         const signUpPlayerData: UserData = this.signupForm.value;
-        console.log(this.signupForm.controls);
-        console.log(this.signupForm.errors);
-
-        // this.authService.signUpPlayer(signUpPlayerData).subscribe({
-        //   next: (resp) => {
-        //     console.log(resp);
-        //   },
-        //   error: (err) => {
-        //     console.log(err);
-        //   },
-        // });
-        break;
-      }
-      case 'signin': {
-        const signInPlayerData: UserData = this.signinForm.value;
-        this.authService.signInPlayer(signInPlayerData).subscribe({
+        this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
           },
@@ -171,6 +183,20 @@ export class AuthComponent implements OnInit {
         });
         break;
       }
+      case 'signin': {
+        const signInPlayerData: UserData = this.signinForm.value;
+        console.log(this.signinForm);
+
+        // this.authService.signInPlayer(signInPlayerData).subscribe({
+        //   next: (resp) => {
+        //     console.log(resp);
+        //   },
+        //   error: (err) => {
+        //     console.log(err);
+        //   },
+        // });
+        break;
+      }
       default:
         break;
     }
@@ -178,10 +204,10 @@ export class AuthComponent implements OnInit {
 
   showOrHidePassword(element: FromStructure) {
     if (element.input.type === 'password') {
-      this.showOrHidePasswordIcon = 'eye-fill';
+      element.input.additionalIcon = 'eye-fill';
       element.input.type = 'text';
     } else {
-      this.showOrHidePasswordIcon = 'eye-slash-fill';
+      element.input.additionalIcon = 'eye-slash-fill';
       element.input.type = 'password';
     }
   }
