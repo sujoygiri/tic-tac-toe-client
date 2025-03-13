@@ -1,5 +1,5 @@
 <div class="w-svw h-svh flex items-center justify-center bg-[url('assets/images/background.jpg')] bg-center bg-repeat">
-    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2" *ngIf="!showOrHideAuthForm">
+    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2">
         <div class="flex flex-col justify-center items-center gap-5 p-5">
             <div class="w-full flex justify-center">
                 <button
@@ -21,10 +21,10 @@
         </div>
     </div>
 </div>
-<div class="fixed top-0 left-0 w-svw h-svh" *ngIf="showOrHideAuthForm">
+<div class="fixed flex top-0 left-0 w-svw h-svh" *ngIf="showOrHideAuthForm" [@slidInTop]="showOrHideAuthForm">
     <div class="w-full flex items-center justify-center">
         <div
-            class="relative p-10 bg-white rounded-2xl mt-8 mx-5 sm:mx-2 w-full sm:w-90 xl:w-96 shadow-2xl shadow-slate-400">
+            class="relative p-12 bg-white rounded-2xl mt-8 mx-5 sm:mx-2 w-full sm:w-90 xl:w-96 shadow-2xl shadow-slate-400">
             <form action="" [formGroup]="currentFormGroup" (ngSubmit)="handelAuth()">
                 <div class="flex flex-col gap-3">
                     <div *ngFor="let element of currentAuthForm" class="flex flex-col gap-1">
@@ -67,14 +67,27 @@
                     </div>
                     <div class="mt-4">
                         <button type="submit"
-                            class="w-full px-5 py-2 text-white font-bold bg-blue-600 hover:bg-blue-700 cursor-pointer rounded-lg shadow-2xl shadow-blue-500 disabled:bg-slate-400 disabled:cursor-not-allowed"
-                            [disabled]="currentFormGroup.invalid && currentAuthFormType !== 'signin'">Submit</button>
+                            class="flex items-center justify-center w-full px-5 py-2 text-white font-bold bg-blue-600 hover:bg-blue-700 cursor-pointer rounded-lg shadow-2xl shadow-blue-500 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                            [disabled]="(currentFormGroup.invalid && currentAuthFormType !== 'signin') || responseFetching">
+                            <div class="mx-auto"><span>Submit</span></div>
+                            <div *ngIf="responseFetching">
+                                <svg class="size-5 animate-spin" width="800" height="800" viewBox="0 0 14 14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g fill="none" fill-rule="evenodd">
+                                        <circle cx="7" cy="7" r="6" stroke="#fff" stroke-opacity=".4"
+                                            stroke-width="2" />
+                                        <path fill="#fff" fill-opacity="1" fill-rule="nonzero"
+                                            d="M7 0a7 7 0 0 1 7 7h-2a5 5 0 0 0-5-5z" />
+                                    </g>
+                                </svg>
+                            </div>
+                        </button>
                     </div>
                 </div>
             </form>
             <div class="absolute top-0 right-0 py-1 px-2">
                 <i class="text-xl bi bi-x-circle-fill cursor-pointer text-rose-500"
-                    (click)="showOrHideAuthForm = false"></i>
+                    (click)="showAuthForm(currentAuthFormType)"></i>
             </div>
         </div>
     </div>

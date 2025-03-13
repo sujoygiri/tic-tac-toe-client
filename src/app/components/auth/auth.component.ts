@@ -8,7 +8,14 @@ import {
 } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
-import { UserData } from '../../interfaces/common.interface';
+import { AuthData } from '../../interfaces/common.interface';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 
 interface FromStructure {
   label: string;
@@ -30,6 +37,22 @@ interface AuhForm {
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
+  animations: [
+    trigger('slidInTop', [
+      state(
+        'void',
+        style({
+          transform: 'translateY(-100%)',
+        })
+      ),
+      transition(':enter', [
+        animate('400ms 0s ease-in', style({ transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('400ms ease-out', style({ transform: 'translateY(-100%)' })),
+      ]),
+    ]),
+  ],
 })
 export class AuthComponent implements OnInit {
   authForm: AuhForm = {
@@ -102,6 +125,7 @@ export class AuthComponent implements OnInit {
   signinForm!: FormGroup;
   currentFormGroup!: FormGroup;
   currentFocusedFormControl: string = '';
+  responseFetching: boolean = false;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService
@@ -131,7 +155,7 @@ export class AuthComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
       },
-      { updateOn: 'submit' }
+      { updateOn: 'blur' }
     );
     // this.signupForm
     //   .get('password')
@@ -166,35 +190,40 @@ export class AuthComponent implements OnInit {
     this.currentAuthForm = this.authForm[type];
     this.currentFormGroup =
       type === 'signup' ? this.signupForm : this.signinForm;
-    this.showOrHideAuthForm = true;
+    this.showOrHideAuthForm = !this.showOrHideAuthForm;
+    this.currentFormGroup.reset();
   }
 
   handelAuth() {
     switch (this.currentAuthFormType) {
       case 'signup': {
-        const signUpPlayerData: UserData = this.signupForm.value;
+        const signUpPlayerData: AuthData = this.signupForm.value;
+        this.responseFetching = true;
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
+            this.responseFetching = false;
             console.log(resp);
           },
           error: (err) => {
+            this.responseFetching = false;
             console.log(err);
           },
         });
         break;
       }
       case 'signin': {
-        const signInPlayerData: UserData = this.signinForm.value;
-        console.log(this.signinForm);
-
-        // this.authService.signInPlayer(signInPlayerData).subscribe({
-        //   next: (resp) => {
-        //     console.log(resp);
-        //   },
-        //   error: (err) => {
-        //     console.log(err);
-        //   },
-        // });
+        const signInPlayerData: AuthData = this.signinForm.value;
+        this.responseFetching = true;
+        this.authService.signInPlayer(signInPlayerData).subscribe({
+          next: (resp) => {
+            console.log(resp);
+            this.responseFetching = false;
+          },
+          error: (err) => {
+            console.log(err);
+            this.responseFetching = false;
+          },
+        });
         break;
       }
       default:
