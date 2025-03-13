@@ -102,6 +102,7 @@ export class AuthComponent implements OnInit {
   signinForm!: FormGroup;
   currentFormGroup!: FormGroup;
   currentFocusedFormControl: string = '';
+  isResponseFetching: boolean = false;
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService
@@ -118,7 +119,7 @@ export class AuthComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*=|()_+{}\[\]:;'"<>,.?~\\/-]).{8,}$/
             ),
           ],
         ],
@@ -173,6 +174,7 @@ export class AuthComponent implements OnInit {
     switch (this.currentAuthFormType) {
       case 'signup': {
         const signUpPlayerData: UserData = this.signupForm.value;
+        this.isResponseFetching = true;
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
@@ -185,16 +187,14 @@ export class AuthComponent implements OnInit {
       }
       case 'signin': {
         const signInPlayerData: UserData = this.signinForm.value;
-        console.log(this.signinForm);
-
-        // this.authService.signInPlayer(signInPlayerData).subscribe({
-        //   next: (resp) => {
-        //     console.log(resp);
-        //   },
-        //   error: (err) => {
-        //     console.log(err);
-        //   },
-        // });
+        this.authService.signInPlayer(signInPlayerData).subscribe({
+          next: (resp) => {
+            console.log(resp);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
         break;
       }
       default:
