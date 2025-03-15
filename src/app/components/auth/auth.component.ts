@@ -142,7 +142,7 @@ export class AuthComponent implements OnInit {
             Validators.required,
             Validators.minLength(8),
             Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]).{8,}$/
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*=|()_+{}\[\]:;'"<>,.?~\\/-]).{8,}$/
             ),
           ],
         ],
