@@ -1,5 +1,5 @@
 <div class="w-svw h-svh flex items-center justify-center bg-[url('assets/images/background.jpg')] bg-center bg-repeat">
-    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2">
+    <div class="w-[20rem] rounded-lg bg-white shadow-2xl shadow-slate-400 p-10 mx-2" *ngIf="!showOrHideAuthForm">
         <div class="flex flex-col justify-center items-center gap-5 p-5">
             <div class="w-full flex justify-center">
                 <button
@@ -22,7 +22,9 @@
     </div>
 </div>
 <div class="fixed flex top-0 left-0 w-svw h-svh" *ngIf="showOrHideAuthForm" [@slidInTop]="showOrHideAuthForm">
-    <div class="w-full flex items-center justify-center">
+    <div class="w-full flex flex-col items-center justify-center">
+        <app-alert class="" [alertBgColor]="alertBgColor" [alertIcon]="alertIcon" [alertMessage]="alertMessage"
+            (closeAlertEvent)="closeAlert($event)" *ngIf="showOrHideAlert"></app-alert>
         <div
             class="relative p-12 bg-white rounded-2xl mt-8 mx-5 sm:mx-2 w-full sm:w-90 xl:w-96 shadow-2xl shadow-slate-400">
             <form action="" [formGroup]="currentFormGroup" (ngSubmit)="handelAuth()">
@@ -35,7 +37,7 @@
                             </div>
                             <input [type]="element.input.type" [id]="element.input.id"
                                 formControlName="{{element.input.formControlName}}"
-                                [className]="'w-full ps-10 p-2.5 outline-0 border-2 rounded-lg shadow-lg shadow-gray-400'"
+                                [className]="'w-full ps-10 pe-10 p-2.5 outline-0 border-2 rounded-lg shadow-lg shadow-gray-400'"
                                 [ngClass]="{'border-emerald-500 shadow-green-100':!currentFormGroup.controls[element.input.formControlName].invalid,'border-rose-500 shadow-rose-200':(currentFormGroup.controls[element.input.formControlName].invalid && currentFormGroup.controls[element.input.formControlName].dirty)}">
                             <div class="absolute inset-y-0 end-0 flex items-center pe-2 cursor-pointer"
                                 *ngIf="element.input.id === 'password'" (click)="showOrHidePassword(element)">

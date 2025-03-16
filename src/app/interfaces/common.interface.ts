@@ -8,3 +8,8 @@ export interface AuthData {
   email?: string;
   password: string;
 }
+
+export interface ResponseData<T> {
+  result: T;
+  rowCount: number;
+}

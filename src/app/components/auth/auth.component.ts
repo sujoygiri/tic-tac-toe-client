@@ -16,6 +16,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { AlertComponent } from '../utility/alert/alert.component';
+import { Router } from '@angular/router';
+import { GlobalService } from '../../services/global.service';
 
 interface FromStructure {
   label: string;
@@ -34,7 +37,7 @@ interface AuhForm {
 
 @Component({
   selector: 'app-auth',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AlertComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
   animations: [
@@ -126,9 +129,18 @@ export class AuthComponent implements OnInit {
   currentFormGroup!: FormGroup;
   currentFocusedFormControl: string = '';
   responseFetching: boolean = false;
+  showOrHideAlert: boolean = false;
+  alertBgColor: string = '';
+  alertMessage: string = '';
+  alertIcon: string = '';
+  timeOutCount: number = 4000;
+  timeoutId: number | undefined = undefined;
+
   constructor(
+    private globalService: GlobalService,
+    private authService: AuthService,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -201,12 +213,29 @@ export class AuthComponent implements OnInit {
         this.responseFetching = true;
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
-            this.responseFetching = false;
             console.log(resp);
+            if (!resp.rowCount) {
+              this.responseFetching = false;
+              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              return;
+            }
+            this.responseFetching = false;
+            this.globalService.userDetails = resp.result;
+            this.router.navigateByUrl('/', { skipLocationChange: true });
           },
           error: (err) => {
-            this.responseFetching = false;
             console.log(err);
+            this.responseFetching = false;
+            this.alertMessage = err.error?.message
+              ? err.error?.message || err.error?.options?.description
+              : err.statusText;
+            this.alertBgColor = 'bg-rose-600';
+            this.alertIcon = 'exclamation-diamond-fill';
+            this.showOrHideAlert = true;
+            window.clearTimeout(this.timeoutId);
+            this.timeoutId = window.setTimeout(() => {
+              this.showOrHideAlert = false;
+            }, this.timeOutCount);
           },
         });
         break;
@@ -217,11 +246,28 @@ export class AuthComponent implements OnInit {
         this.authService.signInPlayer(signInPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
+            if (!resp.rowCount) {
+              this.responseFetching = false;
+              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              return;
+            }
             this.responseFetching = false;
+            this.globalService.userDetails = resp.result;
+            this.router.navigateByUrl('/', { skipLocationChange: true });
           },
           error: (err) => {
             console.log(err);
             this.responseFetching = false;
+            this.alertMessage = err.error?.message
+              ? err.error?.message || err.error?.options?.description
+              : err.statusText;
+            this.alertBgColor = 'bg-rose-600';
+            this.alertIcon = 'exclamation-diamond-fill';
+            this.showOrHideAlert = true;
+            window.clearTimeout(this.timeoutId);
+            this.timeoutId = window.setTimeout(() => {
+              this.showOrHideAlert = false;
+            }, this.timeOutCount);
           },
         });
         break;
@@ -239,5 +285,10 @@ export class AuthComponent implements OnInit {
       element.input.additionalIcon = 'eye-slash-fill';
       element.input.type = 'password';
     }
+  }
+
+  closeAlert(event: boolean) {
+    this.showOrHideAlert = event;
+    window.clearTimeout(this.timeoutId);
   }
 }

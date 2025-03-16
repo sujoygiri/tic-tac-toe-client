@@ -1,0 +1,15 @@
+<div class="w-full sm:w-90 xl:w-96">
+    <div [className]="'w-full rounded-lg shadow-2xl '+alertBgColor">
+        <div class="flex items-center justify-center py-4 px-2">
+            <div class="ps-2 text-white">
+                <i [className]="'bi bi-'+alertIcon"></i>
+            </div>
+            <div class="ms-3 me-auto text-neutral-50 font-semibold text-lg">
+                <span>{{alertMessage}}</span>
+            </div>
+            <div class="px-0.5 hover:bg-rose-800 text-white rounded-lg cursor-pointer" (click)="closeAlert()">
+                <i class="text-2xl bi bi-x"></i>
+            </div>
+        </div>
+    </div>
+</div>
