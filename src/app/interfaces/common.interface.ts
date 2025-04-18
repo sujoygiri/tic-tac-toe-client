@@ -1,4 +1,4 @@
-export interface UserData {
+export interface UserProfile {
   user_id: string;
   name: string;
   email: string;
@@ -11,5 +11,6 @@ export interface AuthData {
 
 export interface ResponseData<T> {
   result: T;
-  rowCount: number;
+  status: 'success' | 'error';
+  message?: string;
 }

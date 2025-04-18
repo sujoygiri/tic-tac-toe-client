@@ -167,7 +167,7 @@ export class AuthComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]],
       },
-      { updateOn: 'blur' }
+      { updateOn: 'submit' }
     );
     // this.signupForm
     //   .get('password')
@@ -214,7 +214,7 @@ export class AuthComponent implements OnInit {
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
-            if (!resp.rowCount) {
+            if (!resp?.result) {
               this.responseFetching = false;
               this.router.navigateByUrl('/auth', { skipLocationChange: true });
               return;
@@ -246,7 +246,7 @@ export class AuthComponent implements OnInit {
         this.authService.signInPlayer(signInPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
-            if (!resp.rowCount) {
+            if (!resp?.result) {
               this.responseFetching = false;
               this.router.navigateByUrl('/auth', { skipLocationChange: true });
               return;

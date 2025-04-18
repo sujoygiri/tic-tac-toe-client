@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { UserData } from '../interfaces/common.interface';
+import { UserProfile } from '../interfaces/common.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalService {
-  private authenticatedUserDetails: UserData = {
+  private isAuthenticated: boolean = false;
+  private authenticatedUserDetails: UserProfile = {
     user_id: '',
     name: '',
     email: '',
@@ -16,7 +17,15 @@ export class GlobalService {
     return this.authenticatedUserDetails;
   }
 
-  set userDetails(userData: UserData) {
+  set userDetails(userData: UserProfile) {
     this.authenticatedUserDetails = userData;
+  }
+
+  get authenticationStatus() {
+    return this.isAuthenticated;
+  }
+
+  set authenticationStatus(status: boolean) {
+    this.isAuthenticated = status;
   }
 }

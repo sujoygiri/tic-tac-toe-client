@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   AuthData,
   ResponseData,
-  UserData,
+  UserProfile,
 } from '../interfaces/common.interface';
 import { Observable } from 'rxjs';
 
@@ -14,8 +14,8 @@ export class AuthService {
   private readonly URL: string = `http://localhost:3000/auth/`;
   constructor(private http: HttpClient) {}
 
-  signUpPlayer(userData: AuthData): Observable<ResponseData<UserData>> {
-    return this.http.post<ResponseData<UserData>>(
+  signUpPlayer(userData: AuthData): Observable<ResponseData<UserProfile>> {
+    return this.http.post<ResponseData<UserProfile>>(
       this.URL + 'signup',
       userData,
       {
@@ -24,8 +24,8 @@ export class AuthService {
     );
   }
 
-  signInPlayer(userData: AuthData): Observable<ResponseData<UserData>> {
-    return this.http.post<ResponseData<UserData>>(
+  signInPlayer(userData: AuthData): Observable<ResponseData<UserProfile>> {
+    return this.http.post<ResponseData<UserProfile>>(
       this.URL + 'signin',
       userData,
       {
@@ -34,8 +34,8 @@ export class AuthService {
     );
   }
 
-  verifyPlayer(): Observable<ResponseData<UserData>> {
-    return this.http.post<ResponseData<UserData>>(
+  verifyPlayer(): Observable<ResponseData<UserProfile>> {
+    return this.http.post<ResponseData<UserProfile>>(
       this.URL + 'verify',
       {},
       { withCredentials: true }
