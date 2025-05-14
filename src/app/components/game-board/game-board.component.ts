@@ -48,9 +48,9 @@ export class GameBoardComponent implements OnInit {
 
   handelSelectedCell(rowIndex: number, cellIndex: number) {
     // console.log(rowIndex, cellIndex);
-    socket.emit('cell-clicked', { rowIndex, cellIndex }, (ack: any) => {
-      console.log(ack);
-    });
+    // socket.emit('cell-clicked', { rowIndex, cellIndex }, (ack: any) => {
+    //   console.log(ack);
+    // });
   }
 
   sendMessage() {

@@ -6,7 +6,7 @@
             </div>
             <p class="text-center p-2 font-semibold text-teal-600">Play With Random</p>
         </div>
-        <div class="bg-neutral-50 rounded-lg cursor-pointer">
+        <div class="bg-neutral-50 rounded-lg cursor-pointer" (click)="showOrHideSearchPopup()">
             <div class="flex items-center justify-center px-4 py-2 w-[10rem] h-auto">
                 <i class="bi bi-person-fill-add text-blue-600 text-8xl"></i>
             </div>
@@ -20,14 +20,15 @@
         </div>
     </div>
 </div>
-<div class="fixed top-0 left-0 w-svw h-svh bg-[rgba(0,0,0,0.8)]">
+<div class="fixed top-0 left-0 w-svw h-svh bg-[rgba(0,0,0,0.8)]" [@fadeInOut]="isSearchIdPopupShowing"
+    *ngIf="isSearchIdPopupShowing">
     <div class="w-full flex items-center justify-center mt-4">
         <div class="relative bg-neutral-100 w-full sm:w-80 h-auto p-8 mx-4 rounded-2xl shadow-2xl shadow-neutral-50">
             <div class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2 w-full">
                     <label for="friend-id" class="font-semibold">Friend profile Id</label>
                     <div class="relative">
-                        <input class="w-full outline-none border-2 border-sky-500 p-2.5 rounded-lg" id="friend-id"
+                        <input class="w-full outline-none border-2 border-sky-500 p-1 rounded-lg" id="friend-id"
                             type="text">
                         <button
                             class="absolute inset-y-0 end-0 flex items-center justify-center gap-2 px-3 py-2 bg-sky-500 hover:bg-sky-600 outline-none border-none rounded-lg cursor-pointer text-white">
@@ -35,11 +36,11 @@
                                 <i class="bi bi-search"></i>
                             </div>
                         </button>
-
                     </div>
                 </div>
                 <div class="absolute top-0.5 right-2 flex items-center justify-between">
-                    <i class="text-xl bi bi-x-circle-fill cursor-pointer text-slate-400 hover:text-rose-500"></i>
+                    <i class="text-xl bi bi-x-circle-fill cursor-pointer text-slate-400 hover:text-rose-500"
+                        (click)="isSearchIdPopupShowing=false"></i>
                 </div>
             </div>
         </div>

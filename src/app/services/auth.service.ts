@@ -23,6 +23,6 @@ export class AuthService {
   }
 
   verifyPlayer(): Observable<any> {
-    return this.http.post(this.URL + 'verify', {}, { withCredentials: true });
+    return this.http.get(this.URL + 'verify', { withCredentials: true });
   }
 }
