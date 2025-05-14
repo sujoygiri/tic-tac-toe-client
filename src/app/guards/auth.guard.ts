@@ -5,22 +5,43 @@ import {
   Router,
   RouterStateSnapshot,
 } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { catchError, map, of, tap } from 'rxjs';
+import { GlobalService } from '../services/global.service';
+import { SocketService } from '../services/socket.service';
 
 export const authorizationGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
+  console.log({ route, state });
   console.log(route.url);
   console.log(state.url);
   const authService = inject(AuthService);
+  const globalService = inject(GlobalService);
+  const socketService = inject(SocketService);
   const router = inject(Router);
+  if (globalService.authenticationStatus) {
+  }
   return authService.verifyPlayer().pipe(
     map((resp) => {
-      return true;
+      if (resp?.result) {
+        console.log(resp);
+        globalService.userDetails = resp.result;
+        globalService.authenticationStatus = true;
+        const authData = { user_id: resp.result.user_id };
+        // socketService.socket('/', authData).connect();
+        // router.navigateByUrl('/', { skipLocationChange: true });
+        return true;
+      } else {
+        router.navigate(['auth']);
+        return false;
+      }
     }),
     catchError(() => {
+      if (state.url === '/auth') {
+        return of(true);
+      }
       router.navigate(['auth']);
       return of(false);
     })

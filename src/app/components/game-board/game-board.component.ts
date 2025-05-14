@@ -8,7 +8,6 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import socket from '../../socket-client';
 
 @Component({
   selector: 'app-game-board',

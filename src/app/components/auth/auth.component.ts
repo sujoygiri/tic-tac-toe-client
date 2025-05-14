@@ -8,7 +8,17 @@ import {
 } from '@angular/forms';
 
 import { AuthService } from '../../services/auth.service';
-import { UserData } from '../../interfaces/common.interface';
+import { AuthData } from '../../interfaces/common.interface';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import { AlertComponent } from '../utility/alert/alert.component';
+import { Router } from '@angular/router';
+import { GlobalService } from '../../services/global.service';
 
 interface FromStructure {
   label: string;
@@ -27,9 +37,25 @@ interface AuhForm {
 
 @Component({
   selector: 'app-auth',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AlertComponent],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css',
+  animations: [
+    trigger('slidInTop', [
+      state(
+        'void',
+        style({
+          transform: 'translateY(-100%)',
+        })
+      ),
+      transition(':enter', [
+        animate('400ms 0s ease-in', style({ transform: 'translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('400ms ease-out', style({ transform: 'translateY(-100%)' })),
+      ]),
+    ]),
+  ],
 })
 export class AuthComponent implements OnInit {
   authForm: AuhForm = {
@@ -102,10 +128,19 @@ export class AuthComponent implements OnInit {
   signinForm!: FormGroup;
   currentFormGroup!: FormGroup;
   currentFocusedFormControl: string = '';
-  isResponseFetching: boolean = false;
+  responseFetching: boolean = false;
+  showOrHideAlert: boolean = false;
+  alertBgColor: string = '';
+  alertMessage: string = '';
+  alertIcon: string = '';
+  timeOutCount: number = 4000;
+  timeoutId: number | undefined = undefined;
+
   constructor(
+    private globalService: GlobalService,
+    private authService: AuthService,
     private formBuilder: FormBuilder,
-    private authService: AuthService
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -167,32 +202,72 @@ export class AuthComponent implements OnInit {
     this.currentAuthForm = this.authForm[type];
     this.currentFormGroup =
       type === 'signup' ? this.signupForm : this.signinForm;
-    this.showOrHideAuthForm = true;
+    this.showOrHideAuthForm = !this.showOrHideAuthForm;
+    this.currentFormGroup.reset();
   }
 
   handelAuth() {
     switch (this.currentAuthFormType) {
       case 'signup': {
-        const signUpPlayerData: UserData = this.signupForm.value;
-        this.isResponseFetching = true;
+        const signUpPlayerData: AuthData = this.signupForm.value;
+        this.responseFetching = true;
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
+            if (!resp?.result) {
+              this.responseFetching = false;
+              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              return;
+            }
+            this.responseFetching = false;
+            this.globalService.userDetails = resp.result;
+            this.router.navigateByUrl('/', { skipLocationChange: true });
           },
           error: (err) => {
             console.log(err);
+            this.responseFetching = false;
+            this.alertMessage = err.error?.message
+              ? err.error?.message || err.error?.options?.description
+              : err.statusText;
+            this.alertBgColor = 'bg-rose-600';
+            this.alertIcon = 'exclamation-diamond-fill';
+            this.showOrHideAlert = true;
+            window.clearTimeout(this.timeoutId);
+            this.timeoutId = window.setTimeout(() => {
+              this.showOrHideAlert = false;
+            }, this.timeOutCount);
           },
         });
         break;
       }
       case 'signin': {
-        const signInPlayerData: UserData = this.signinForm.value;
+        const signInPlayerData: AuthData = this.signinForm.value;
+        this.responseFetching = true;
         this.authService.signInPlayer(signInPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
+            if (!resp?.result) {
+              this.responseFetching = false;
+              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              return;
+            }
+            this.responseFetching = false;
+            this.globalService.userDetails = resp.result;
+            this.router.navigateByUrl('/', { skipLocationChange: true });
           },
           error: (err) => {
             console.log(err);
+            this.responseFetching = false;
+            this.alertMessage = err.error?.message
+              ? err.error?.message || err.error?.options?.description
+              : err.statusText;
+            this.alertBgColor = 'bg-rose-600';
+            this.alertIcon = 'exclamation-diamond-fill';
+            this.showOrHideAlert = true;
+            window.clearTimeout(this.timeoutId);
+            this.timeoutId = window.setTimeout(() => {
+              this.showOrHideAlert = false;
+            }, this.timeOutCount);
           },
         });
         break;
@@ -210,5 +285,10 @@ export class AuthComponent implements OnInit {
       element.input.additionalIcon = 'eye-slash-fill';
       element.input.type = 'password';
     }
+  }
+
+  closeAlert(event: boolean) {
+    this.showOrHideAlert = event;
+    window.clearTimeout(this.timeoutId);
   }
 }
