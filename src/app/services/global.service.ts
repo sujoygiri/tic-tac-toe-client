@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { UserProfile } from '../interfaces/common.interface';
+import { PlayerProfile } from '../interfaces/common.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GlobalService {
-  private isAuthenticated: boolean = false;
-  private authenticatedUserDetails: UserProfile = {
-    user_id: '',
-    name: '',
+  private isVerified: boolean = false;
+  private authenticatedUserDetails: PlayerProfile = {
+    player_id: '',
+    player_name: '',
     email: '',
   };
   constructor() {}
@@ -17,15 +17,15 @@ export class GlobalService {
     return this.authenticatedUserDetails;
   }
 
-  set userDetails(userData: UserProfile) {
+  set userDetails(userData: PlayerProfile) {
     this.authenticatedUserDetails = userData;
   }
 
-  get authenticationStatus() {
-    return this.isAuthenticated;
+  get verificationStatus() {
+    return this.isVerified;
   }
 
-  set authenticationStatus(status: boolean) {
-    this.isAuthenticated = status;
+  set verificationStatus(status: boolean) {
+    this.isVerified = status;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ResponseData, UserProfile } from '../interfaces/common.interface';
+import { ResponseData, PlayerProfile } from '../interfaces/common.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +12,8 @@ export class UtilService {
 
   getFriendProfileById(
     friendProfileId: string
-  ): Observable<ResponseData<UserProfile>> {
-    return this.http.get<ResponseData<UserProfile>>(
+  ): Observable<ResponseData<PlayerProfile>> {
+    return this.http.get<ResponseData<PlayerProfile>>(
       this.URL + 'profile/' + friendProfileId
     );
   }

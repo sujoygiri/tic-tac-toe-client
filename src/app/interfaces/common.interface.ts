@@ -1,6 +1,6 @@
-export interface UserProfile {
-  user_id: string;
-  name: string;
+export interface PlayerProfile {
+  player_id: string;
+  player_name: string;
   email: string;
 }
 export interface AuthData {
@@ -10,7 +10,7 @@ export interface AuthData {
 }
 
 export interface ResponseData<T> {
-  result: T;
-  status: 'success' | 'error';
+  data: T;
+  statusCode: number;
   message?: string;
 }

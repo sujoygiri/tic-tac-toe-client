@@ -10,58 +10,61 @@ import { AuthService } from '../services/auth.service';
 import { GlobalService } from '../services/global.service';
 import { SocketService } from '../services/socket.service';
 
+export const authenticationGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const globalService = inject(GlobalService);
+  const authService = inject(AuthService);
+  // const socketService = inject(SocketService);
+  const router = inject(Router);
+  return authService.verifyPlayer().pipe(
+    map((resp) => {
+      if (resp?.data) {
+        console.log(resp);
+        globalService.userDetails = resp.data;
+        globalService.verificationStatus = true;
+        const authData = { user_id: resp.data.player_id };
+        // socketService.socket('/', authData).connect();
+        router.navigate(['']);
+        return false;
+      } else {
+        return true;
+      }
+    }),
+    catchError((err) => {
+      console.log(err);
+      return of(true);
+    })
+  );
+};
+
 export const authorizationGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  console.log({ route, state });
-  console.log(route.url);
-  console.log(state.url);
-  const authService = inject(AuthService);
   const globalService = inject(GlobalService);
-  const socketService = inject(SocketService);
+  const authService = inject(AuthService);
+  // const socketService = inject(SocketService);
   const router = inject(Router);
-  if (globalService.authenticationStatus) {
-  }
   return authService.verifyPlayer().pipe(
     map((resp) => {
-      if (resp?.result) {
+      if (resp?.data) {
         console.log(resp);
-        globalService.userDetails = resp.result;
-        globalService.authenticationStatus = true;
-        const authData = { user_id: resp.result.user_id };
+        globalService.userDetails = resp.data;
+        globalService.verificationStatus = true;
+        const authData = { user_id: resp.data.player_id };
         // socketService.socket('/', authData).connect();
-        // router.navigateByUrl('/', { skipLocationChange: true });
         return true;
       } else {
         router.navigate(['auth']);
         return false;
       }
     }),
-    catchError(() => {
-      if (state.url === '/auth') {
-        return of(true);
-      }
+    catchError((err) => {
+      console.log(err);
       router.navigate(['auth']);
       return of(false);
-    })
-  );
-};
-
-export const authenticationGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot
-) => {
-  const routeState = state.url.split('/')[1];
-  const authService = inject(AuthService);
-  const router = inject(Router);
-  return authService.verifyPlayer().pipe(
-    map((resp) => {
-      router.navigate([routeState]);
-      return false;
-    }),
-    catchError(() => {
-      return of(true);
     })
   );
 };

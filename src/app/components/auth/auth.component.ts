@@ -64,9 +64,9 @@ export class AuthComponent implements OnInit {
         label: 'Name',
         input: {
           type: 'text',
-          id: 'name',
+          id: 'player_name',
           icon: 'person-circle',
-          formControlName: 'name',
+          formControlName: 'player_name',
         },
       },
       {
@@ -146,7 +146,7 @@ export class AuthComponent implements OnInit {
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group(
       {
-        name: ['', [Validators.required, Validators.minLength(3)]],
+        player_name: ['', [Validators.required, Validators.minLength(3)]],
         email: ['', [Validators.required, Validators.email]],
         password: [
           '',
@@ -214,14 +214,14 @@ export class AuthComponent implements OnInit {
         this.authService.signUpPlayer(signUpPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
-            if (!resp?.result) {
+            if (!resp?.data) {
               this.responseFetching = false;
-              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              this.router.navigateByUrl('/auth');
               return;
             }
             this.responseFetching = false;
-            this.globalService.userDetails = resp.result;
-            this.router.navigateByUrl('/', { skipLocationChange: true });
+            this.globalService.userDetails = resp.data;
+            this.router.navigateByUrl('/');
           },
           error: (err) => {
             console.log(err);
@@ -246,14 +246,14 @@ export class AuthComponent implements OnInit {
         this.authService.signInPlayer(signInPlayerData).subscribe({
           next: (resp) => {
             console.log(resp);
-            if (!resp?.result) {
+            if (!resp?.data) {
               this.responseFetching = false;
-              this.router.navigateByUrl('/auth', { skipLocationChange: true });
+              this.router.navigateByUrl('/auth');
               return;
             }
             this.responseFetching = false;
-            this.globalService.userDetails = resp.result;
-            this.router.navigateByUrl('/', { skipLocationChange: true });
+            this.globalService.userDetails = resp.data;
+            this.router.navigateByUrl('/');
           },
           error: (err) => {
             console.log(err);

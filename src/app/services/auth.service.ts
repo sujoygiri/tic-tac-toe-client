@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {
   AuthData,
   ResponseData,
-  UserProfile,
+  PlayerProfile,
 } from '../interfaces/common.interface';
 import { Observable } from 'rxjs';
 
@@ -14,8 +14,8 @@ export class AuthService {
   private readonly URL: string = `http://localhost:3000/auth/`;
   constructor(private http: HttpClient) {}
 
-  signUpPlayer(userData: AuthData): Observable<ResponseData<UserProfile>> {
-    return this.http.post<ResponseData<UserProfile>>(
+  signUpPlayer(userData: AuthData): Observable<ResponseData<PlayerProfile>> {
+    return this.http.post<ResponseData<PlayerProfile>>(
       this.URL + 'signup',
       userData,
       {
@@ -24,8 +24,8 @@ export class AuthService {
     );
   }
 
-  signInPlayer(userData: AuthData): Observable<ResponseData<UserProfile>> {
-    return this.http.post<ResponseData<UserProfile>>(
+  signInPlayer(userData: AuthData): Observable<ResponseData<PlayerProfile>> {
+    return this.http.post<ResponseData<PlayerProfile>>(
       this.URL + 'signin',
       userData,
       {
@@ -34,16 +34,9 @@ export class AuthService {
     );
   }
 
-<<<<<<< HEAD
-  verifyPlayer(): Observable<any> {
-    return this.http.get(this.URL + 'verify', { withCredentials: true });
-=======
-  verifyPlayer(): Observable<ResponseData<UserProfile>> {
-    return this.http.post<ResponseData<UserProfile>>(
-      this.URL + 'verify',
-      {},
-      { withCredentials: true }
-    );
->>>>>>> 9d16be7229492ff79ebf6f632d31754f2221aea7
+  verifyPlayer(): Observable<ResponseData<PlayerProfile>> {
+    return this.http.get<ResponseData<PlayerProfile>>(this.URL + 'verify', {
+      withCredentials: true,
+    });
   }
 }
