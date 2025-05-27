@@ -7,14 +7,14 @@ import { ResponseData, PlayerProfile } from '../interfaces/common.interface';
   providedIn: 'root',
 })
 export class UtilService {
-  private readonly URL: string = `http://localhost:3000/util/`;
+  private readonly URL: string = `http://localhost:3000/player/`;
   constructor(private http: HttpClient) {}
 
   getFriendProfileById(
     friendProfileId: string
   ): Observable<ResponseData<PlayerProfile>> {
     return this.http.get<ResponseData<PlayerProfile>>(
-      this.URL + 'profile/' + friendProfileId
+      this.URL + 'find-player-id?playerId=' + friendProfileId
     );
   }
 }

@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
     this.searchingStatus = true;
     this.utilService.getFriendProfileById(this.friendProfileId).subscribe({
       next: (resp) => {
-        if (resp.statusCode === 201) {
+        if (resp.statusCode === 200) {
           this.searchingStatus = false;
           this.foundFriendProfile.push(resp.data);
           console.log(resp);
